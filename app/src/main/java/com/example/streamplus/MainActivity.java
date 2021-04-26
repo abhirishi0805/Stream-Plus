@@ -30,13 +30,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvStream = (TextView) findViewById(R.id.tvStream);
-        tvPlus = (TextView) findViewById(R.id.tvPlus);
-        cvLoginCard = (CardView) findViewById(R.id.cvLoginCard);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvStream = findViewById(R.id.tvStream);
+        tvPlus = findViewById(R.id.tvPlus);
+        cvLoginCard = findViewById(R.id.cvLoginCard);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        btnSubmit = findViewById(R.id.btnSubmit);
+        progressBar = findViewById(R.id.progressBar);
 
         tvStream.setTranslationY(-800f);
         tvPlus.setTranslationY(-600f);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     progressBar.setVisibility(View.GONE);
                                     Toast.makeText(MainActivity.this, "Successfully Loged In", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                                    startActivity(new Intent(MainActivity.this, FolderActivity.class));
                                 } else {
                                     Toast.makeText(MainActivity.this, "LogIn Failed or User Not Available", Toast.LENGTH_SHORT).show();
                                     progressBar.setVisibility(View.GONE);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            //reload();
+            startActivity(new Intent(MainActivity.this, FolderActivity.class));
         }
     }
 }

@@ -4,8 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements FolderAdapter.itemClicked
+public class FolderActivity extends AppCompatActivity implements FolderAdapter.itemClicked
 {
 
     RecyclerView rvFolder;
@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity implements FolderAdapter.ite
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_folder);
 
         tvWelcome = findViewById(R.id.tvWelcome);
         tvLoading = findViewById(R.id.tvLoading);
@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements FolderAdapter.ite
                     folders.add(snapshot.getValue(String.class));
                 }
 
-                myAdapter = new FolderAdapter(HomeActivity.this, folders);
+                myAdapter = new FolderAdapter(FolderActivity.this, folders);
                 rvFolder.setAdapter(myAdapter);
 
                 tvWelcome.setVisibility(View.VISIBLE);
@@ -87,13 +87,15 @@ public class HomeActivity extends AppCompatActivity implements FolderAdapter.ite
             public void onCancelled(DatabaseError error) {
                 tvLoading.setVisibility(View.GONE);
                 progressBar2.setVisibility(View.GONE);
-                Toast.makeText(HomeActivity.this, "Database Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FolderActivity.this, "Database Error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public void onItemClicked(int index) {
-        Toast.makeText(HomeActivity.this, folders.get(index), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(FolderActivity.this, VideoActivity.class);
+        intent.putExtra("folder_name", folders.get(index));
+        startActivity(intent);
     }
 }
