@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +38,11 @@ public class VideoActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         folder_name = intent.getStringExtra("folder_name");
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(folder_name);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("storage_mappings").child(folder_name);

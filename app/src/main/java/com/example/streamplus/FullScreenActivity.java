@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -39,12 +40,6 @@ public class FullScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Fullscreen");
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-
         playerView = findViewById(R.id.exoplayer_fullscreen);
         tvFullScreen = findViewById(R.id.tvFullScreen);
 
@@ -66,11 +61,12 @@ public class FullScreenActivity extends AppCompatActivity {
                         getSupportActionBar().show();
                     }
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
                     params.width = params.MATCH_PARENT;
                     params.height = (int) (200 * getApplicationContext().getResources().getDisplayMetrics().density);
                     playerView.setLayoutParams(params);
                     fullscreen = false;
+                    tvFullScreen.setVisibility(View.VISIBLE);
                 }
                 else {
                     fullscreenButton.setImageDrawable(ContextCompat.getDrawable(FullScreenActivity.this, R.drawable.ic_fullscreen_shrink));
@@ -79,11 +75,12 @@ public class FullScreenActivity extends AppCompatActivity {
                         getSupportActionBar().hide();
                     }
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) playerView.getLayoutParams();
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
                     params.width = params.MATCH_PARENT;
                     params.height = params.MATCH_PARENT;
                     playerView.setLayoutParams(params);
                     fullscreen = true;
+                    tvFullScreen.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -150,5 +147,17 @@ public class FullScreenActivity extends AppCompatActivity {
             currentWindow = exoPlayer.getCurrentWindowIndex();
             exoPlayer = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        exoPlayer.stop();
+        releasePlayer();
+
+        /*final Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();*/
     }
 }

@@ -1,8 +1,5 @@
 package com.example.streamplus;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +8,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private long backPressedTime = 0;
+    private Toast backToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +41,13 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
         progressBar = findViewById(R.id.progressBar);
 
+
         tvStream.setTranslationY(-800f);
-        tvPlus.setTranslationY(-600f);
-        cvLoginCard.setTranslationY(1500f);
+        tvPlus.setTranslationY(-400f);
+        cvLoginCard.setTranslationY(400f);
         tvStream.animate().translationYBy(800f);
-        tvPlus.animate().translationYBy(600f);
-        cvLoginCard.animate().translationYBy(-1500f);
+        tvPlus.animate().translationYBy(400f);
+        cvLoginCard.animate().translationYBy(-400f);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -81,8 +85,24 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             startActivity(new Intent(MainActivity.this, FolderActivity.class));
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel();
+            finishAffinity();
+            finishActivity(1);
+        } else {
+            backToast = Toast.makeText(getBaseContext(), "Press again to exit", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+
+        backPressedTime = System.currentTimeMillis();
     }
 }

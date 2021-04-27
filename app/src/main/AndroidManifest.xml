@@ -14,11 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StreamPlus">
         <activity android:name=".FullScreenActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme.Design.NoActionBar">
         </activity>
         <activity
             android:name=".VideoActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".FolderActivity"/>
         <activity
             android:name=".FolderActivity"
             android:screenOrientation="portrait" />
