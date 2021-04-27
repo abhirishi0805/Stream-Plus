@@ -36,6 +36,13 @@ public class videoViewHolder extends RecyclerView.ViewHolder
     public videoViewHolder(@NonNull View itemView) {
         super(itemView);
         mView = itemView;
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onItemClick(v, getAdapterPosition());
+            }
+        });
     }
 
     public void setExoplayer(final Application application, String videoName, final String videoURL)
@@ -60,5 +67,15 @@ public class videoViewHolder extends RecyclerView.ViewHolder
         catch (Exception e){
             Log.e("videoViewHolder", "Exoplayer error : " + e.getMessage());
         }
+    }
+
+    private videoViewHolder.Clicklistener mClickListener;
+
+    public interface Clicklistener{
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnClicklistener(videoViewHolder.Clicklistener clicklistener){
+        mClickListener = clicklistener;
     }
 }

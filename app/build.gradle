@@ -54,5 +54,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.10.8'
     implementation 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.10.8'
 
-    implementation 'com.firebaseui:firebase-ui-database:2.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.3.2'
 }
