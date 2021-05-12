@@ -14,17 +14,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class VideoActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class VideoActivity extends AppCompatActivity implements videoAdapter.itemClicked
+{
 
     public static String folder_name;
     FirebaseDatabase database;
     DatabaseReference reference;
 
     RecyclerView rvVideo;
+    RecyclerView.Adapter adapter;
 
+    ArrayList<videoModel> videos;
     String videoName, videoURL, videoDesc;
 
     @Override
@@ -39,57 +47,52 @@ public class VideoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         folder_name = intent.getStringExtra("folder_name");
 
+        videos = new ArrayList<>();
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(folder_name);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("storage_mappings").child(folder_name);
+        setData();
     }
 
+    private void setData()
+    {
+        videos.clear();
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("storage_mappings").child(folder_name);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                    videoModel video = dataSnapshot.getValue(videoModel.class);
+                    videos.add(video);
+                }
+                adapter = new videoAdapter(VideoActivity.this, videos);
+                rvVideo.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onItemClicked(int index)
+    {
+        videoName = videos.get(index).getVideoName();
+        videoDesc = videos.get(index).getVideoDesc();
+        videoURL = videos.get(index).getVideoURL();
 
-        FirebaseRecyclerOptions<Member> options =
-                new FirebaseRecyclerOptions.Builder<Member>()
-                .setQuery(reference, Member.class)
-                .build();
-
-        FirebaseRecyclerAdapter<Member, videoViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<Member, videoViewHolder>(options) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull videoViewHolder videoViewHolder, int i, @NonNull Member member) {
-                        videoViewHolder.setExoplayer(getApplication(), member.getVideoName(), member.getVideoURL());
-
-                        videoViewHolder.setOnClicklistener(new videoViewHolder.Clicklistener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-                                videoName = getItem(position).getVideoName();
-                                videoURL = getItem(position).getVideoURL();
-                                videoDesc = getItem(position).getVideoDesc();
-
-                                Intent intent = new Intent(VideoActivity.this, FullScreenActivity.class);
-                                intent.putExtra("videoName", videoName);
-                                intent.putExtra("videoURL", videoURL);
-                                intent.putExtra("videoDesc", videoDesc);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-
-                    @NonNull
-                    @Override
-                    public videoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-                    {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_item, parent, false);
-                        return new videoViewHolder(view);
-                    }
-                };
-
-        firebaseRecyclerAdapter.startListening();
-        rvVideo.setAdapter(firebaseRecyclerAdapter);
+        Intent intent2 = new Intent(VideoActivity.this, FullScreenActivity.class);
+        intent2.putExtra("videoName", videoName);
+        intent2.putExtra("videoURL", videoURL);
+        intent2.putExtra("videoDesc", videoDesc);
+        startActivity(intent2);
     }
 }

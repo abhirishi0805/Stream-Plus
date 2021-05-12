@@ -1,12 +1,12 @@
 package com.example.streamplus;
 
-public class Member
+public class videoModel
 {
     String videoName;
     String videoURL;
     String videoDesc;
 
-    public Member(){}
+    public videoModel(){}
 
     public String getVideoName() {
         return videoName;
