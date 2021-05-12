@@ -4,6 +4,7 @@ public class Member
 {
     String videoName;
     String videoURL;
+    String videoDesc;
 
     public Member(){}
 
@@ -21,5 +22,13 @@ public class Member
 
     public void setVideoURL(String videoURL) {
         this.videoURL = videoURL;
+    }
+
+    public String getVideoDesc() {
+        return videoDesc;
+    }
+
+    public void setVideoDesc(String videoDesc) {
+        this.videoDesc = videoDesc;
     }
 }

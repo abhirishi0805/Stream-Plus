@@ -27,8 +27,8 @@ public class FullScreenActivity extends AppCompatActivity {
 
     private SimpleExoPlayer exoPlayer;
     private PlayerView playerView;
-    TextView tvFullScreen;
-    private String videoURL, videoName;
+    TextView tvFullScreen, tvDescription;
+    private String videoURL, videoName, videoDesc;
     private boolean playWhenReady = false;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -42,14 +42,17 @@ public class FullScreenActivity extends AppCompatActivity {
 
         playerView = findViewById(R.id.exoplayer_fullscreen);
         tvFullScreen = findViewById(R.id.tvFullScreen);
+        tvDescription = findViewById(R.id.tvDescription);
 
         fullscreenButton = playerView.findViewById(R.id.exoplayer_fullscreen_icon);
 
         Intent intent = getIntent();
         videoURL = intent.getStringExtra("videoURL");
         videoName = intent.getStringExtra("videoName");
+        videoDesc = intent.getStringExtra("videoDesc");
 
         tvFullScreen.setText(videoName);
+        tvDescription.setText(videoDesc);
 
         fullscreenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +70,7 @@ public class FullScreenActivity extends AppCompatActivity {
                     playerView.setLayoutParams(params);
                     fullscreen = false;
                     tvFullScreen.setVisibility(View.VISIBLE);
+                    tvDescription.setVisibility(View.VISIBLE);
                 }
                 else {
                     fullscreenButton.setImageDrawable(ContextCompat.getDrawable(FullScreenActivity.this, R.drawable.ic_fullscreen_shrink));
@@ -81,6 +85,7 @@ public class FullScreenActivity extends AppCompatActivity {
                     playerView.setLayoutParams(params);
                     fullscreen = true;
                     tvFullScreen.setVisibility(View.INVISIBLE);
+                    tvDescription.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -118,7 +123,8 @@ public class FullScreenActivity extends AppCompatActivity {
         super.onResume();
 
         if(Util.SDK_INT >= 26 || exoPlayer == null) {
-
+            exoPlayer.setPlayWhenReady(true);
+            //initializePlayer(); //added
         }
     }
 
@@ -127,15 +133,19 @@ public class FullScreenActivity extends AppCompatActivity {
         super.onPause();
 
         if(Util.SDK_INT > 26)
-            releasePlayer();
+            exoPlayer.setPlayWhenReady(false);
+            //releasePlayer();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if(Util.SDK_INT >= 26)
-            releasePlayer();
+        if(Util.SDK_INT >= 26) {
+            exoPlayer.setPlayWhenReady(false);
+            //exoPlayer.stop();  //added
+            //releasePlayer();
+        }
     }
 
     private void releasePlayer()
@@ -153,11 +163,8 @@ public class FullScreenActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        exoPlayer.stop();
-        releasePlayer();
-
-        /*final Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        finish();*/
+        //exoPlayer.stop();
+        //releasePlayer();
+        exoPlayer.setPlayWhenReady(false);
     }
 }

@@ -25,7 +25,7 @@ public class VideoActivity extends AppCompatActivity {
 
     RecyclerView rvVideo;
 
-    String videoName, videoURL;
+    String videoName, videoURL, videoDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +69,12 @@ public class VideoActivity extends AppCompatActivity {
                             public void onItemClick(View view, int position) {
                                 videoName = getItem(position).getVideoName();
                                 videoURL = getItem(position).getVideoURL();
+                                videoDesc = getItem(position).getVideoDesc();
 
                                 Intent intent = new Intent(VideoActivity.this, FullScreenActivity.class);
                                 intent.putExtra("videoName", videoName);
                                 intent.putExtra("videoURL", videoURL);
+                                intent.putExtra("videoDesc", videoDesc);
                                 startActivity(intent);
                             }
                         });
